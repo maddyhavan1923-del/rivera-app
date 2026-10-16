@@ -1,5 +1,9 @@
 name: Build Rivera APK
-on: [workflow_dispatch]
+on:
+  push:
+    branches: [main]
+    paths: ['lib/**', 'pubspec.yaml', 'logo.png', '.github/workflows/**']
+  workflow_dispatch:
 permissions: {contents: write}
 jobs:
   build:
@@ -31,3 +35,4 @@ jobs:
           git diff --cached --quiet || git commit -m "APK build $(date +%Y%m%d-%H%M)"
           git pull --rebase origin main || true
           git push origin main
+
