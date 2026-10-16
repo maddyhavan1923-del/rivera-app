@@ -10,7 +10,7 @@ import 'auth_service.dart';
 class ExcelService {
   // Dynamic value-ah CellValue-ah maathum (excel 4.x requirement)
   static CellValue cv(dynamic v) {
-    if (v == null) return const TextCellValue('');
+    if (v == null) return TextCellValue('');
     if (v is bool) return BoolCellValue(v);
     if (v is int) return IntCellValue(v);
     if (v is double) return DoubleCellValue(v);
