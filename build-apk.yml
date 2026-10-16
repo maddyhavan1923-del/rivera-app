@@ -1,0 +1,38 @@
+name: Build Rivera APK (automatic cloud build)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Generate Android folder (keeps our lib/ code as-is)
+        run: flutter create --platforms=android --project-name rivera_attendance_v3 .
+
+      - name: Add location + camera permissions
+        run: |
+          M=android/app/src/main/AndroidManifest.xml
+          PERMS='<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/><uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/><uses-permission android:name="android.permission.CAMERA"/>'
+          grep -q "ACCESS_FINE_LOCATION" "$M" || sed -i "s|<application |${PERMS}<application |" "$M"
+          grep -q "ACCESS_FINE_LOCATION" "$M" && echo "permissions OK"
+
+      - name: Get packages
+        run: flutter pub get
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: rivera-v3-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
