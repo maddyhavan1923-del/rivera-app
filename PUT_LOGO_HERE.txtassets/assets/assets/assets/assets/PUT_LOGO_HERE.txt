@@ -1,5 +1,0 @@
-REM RIVERA LOGO — AUTO COPY (no manual step)
-REM Indha folder-la logo.png illana, app automatic-ah 'R' letter logo kaattum — app work aagum.
-REM Original company logo use panna: keezha file-ah inga logo.png nu copy pannunga:
-REM FROM: C:\Users\user\Downloads\Rivera_Signature_695x296.png
-REM TO:   assets\logo.png
