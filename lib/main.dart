@@ -838,7 +838,8 @@ class _HomeTab extends State<HomeTab> with ToastMixin<HomeTab> {
               Expanded(
                 child: FilledButton.icon(
                     style: FilledButton.styleFrom(
-                        backgroundColor: AppConfig.green, height: 46),
+                        backgroundColor: AppConfig.green,
+                        minimumSize: const Size.fromHeight(46)),
                     onPressed: busy ? null : _checkIn,
                     icon: const Icon(Icons.fingerprint),
                     label: const Text('CHECK-IN')),
@@ -847,14 +848,16 @@ class _HomeTab extends State<HomeTab> with ToastMixin<HomeTab> {
               Expanded(
                 child: FilledButton.icon(
                     style: FilledButton.styleFrom(
-                        backgroundColor: AppConfig.orange, height: 46),
+                        backgroundColor: AppConfig.orange,
+                        minimumSize: const Size.fromHeight(46)),
                     onPressed: _checkOut,
                     icon: const Icon(Icons.logout),
                     label: const Text('CHECK-OUT')),
               ),
               const SizedBox(width: 8),
               OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(height: 46),
+                  style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(46)),
                   onPressed: _reVerify,
                   icon: const Icon(Icons.my_location, size: 18),
                   label: const Text('VERIFY')),
