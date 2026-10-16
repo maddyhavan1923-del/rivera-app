@@ -68,6 +68,14 @@ class AuthService {
     return null;
   }
 
+  // Password verify (fingerprint fallback)
+  static Future<bool> verifyPassword(String username, String password) async {
+    final p = await SharedPreferences.getInstance();
+    final passRaw = p.getString(_kPass) ?? '{}';
+    final Map<String, dynamic> pass = jsonDecode(passRaw);
+    return pass[username.trim()] == hash(password);
+  }
+
   static Future<bool> adminResetPassword(String username, String newPass) async {
     if (newPass.length < 4) return false;
     final p = await SharedPreferences.getInstance();

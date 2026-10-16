@@ -67,20 +67,43 @@ class DiaryService {
   }
 }
 
-// ---------- REFERENCE TAB (employee referrals / company refs) ----------
+// ---------- REFERS PAGE (employee referrals / company refs) ----------
 class ReferenceService {
-  static const _k = 'riv_ref_v3';
+  static const _k = 'riv_ref_v4';
   static Future<List<Map<String, String>>> all() async {
     final p = await SharedPreferences.getInstance();
     final raw = p.getString(_k);
     if (raw == null) return [];
-    return (jsonDecode(raw) as List).map((e) => Map<String, String>.from(e.map((k, v) => MapEntry(k.toString(), v.toString())))).toList();
+    final list = (jsonDecode(raw) as List)
+        .map((e) => Map<String, String>.from(e.map((k, v) => MapEntry(k.toString(), v.toString()))))
+        .toList();
+    // migrate old entries (no id) -> add ids
+    bool changed = false;
+    for (final m in list) {
+      if (m['id'] == null || m['id']!.isEmpty) {
+        m['id'] = const Uuid().v4();
+        changed = true;
+      }
+    }
+    if (changed) await _save(list);
+    return list;
   }
-  static Future<void> add(Map<String, String> m) async {
+
+  static Future<void> _save(List<Map<String, String>> list) async {
     final p = await SharedPreferences.getInstance();
+    await p.setString(_k, jsonEncode(list.length > 20000 ? list.sublist(list.length - 20000) : list));
+  }
+
+  static Future<void> add(Map<String, String> m) async {
     final list = await all();
-    list.add({...m, 'on': DateTime.now().toIso8601String()});
-    await p.setString(_k, jsonEncode(list));
+    list.add({'id': const Uuid().v4(), ...m, 'on': DateTime.now().toIso8601String()});
+    await _save(list);
+  }
+
+  static Future<void> delete(String id) async {
+    final list = await all();
+    list.removeWhere((e) => e['id'] == id);
+    await _save(list);
   }
 }
 
